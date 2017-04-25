@@ -41,6 +41,7 @@ module Jekyll
         image.name = "amp-img"
 
         image['layout'] = "responsive" if responsive
+        image.delete('alt')
       end
 
       # Picture elements are not accepted in amp pages, convert them to amp-img
@@ -81,6 +82,28 @@ module Jekyll
       end
 
       # Return the html as plaintext string
+      doc.to_s
+    end
+
+    def amp_tags(input, responsive = true, wi = nil, he = nil)
+      doc = Nokogiri::HTML.fragment(input);
+
+      doc.css('iframe').each do |image|
+        image.name = 'amp-iframe'
+        image['sandbox'] = 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox'
+
+        if image['height'] == '100%'
+          image['height'] = '380px'
+          image['layout'] = 'responsive'
+        end
+
+        if image['width'] == '100%'
+          image['width'] = '380px'
+          image['layout'] = 'responsive'
+        end
+
+        image['layout'] = 'responsive' if responsive
+      end
       doc.to_s
     end
   end
