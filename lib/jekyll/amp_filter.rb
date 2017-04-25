@@ -88,21 +88,23 @@ module Jekyll
     def amp_tags(input, responsive = true, wi = nil, he = nil)
       doc = Nokogiri::HTML.fragment(input);
 
-      doc.css('iframe').each do |image|
-        image.name = 'amp-iframe'
-        image['sandbox'] = 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox'
+      doc.css('iframe').each do |iframe|
+        iframe.name = 'amp-iframe'
+        iframe['sandbox'] = 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox'
 
-        if image['height'] == '100%'
-          image['height'] = '380px'
-          image['layout'] = 'responsive'
+        iframe.delete('allowtransparency')
+
+        if iframe['height'] == '100%'
+          iframe['height'] = '380px'
+          iframe['layout'] = 'responsive'
         end
 
-        if image['width'] == '100%'
-          image['width'] = '380px'
-          image['layout'] = 'responsive'
+        if iframe['width'] == '100%'
+          iframe['width'] = '380px'
+          iframe['layout'] = 'responsive'
         end
 
-        image['layout'] = 'responsive' if responsive
+        iframe['layout'] = 'responsive' if responsive
       end
       doc.to_s
     end
